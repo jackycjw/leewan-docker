@@ -1,0 +1,78 @@
+<script type="text/x-template" id="invoiceCompo">
+<div>
+	<el-table :data="invoiceList"  fit border style="width: 100%;" 
+	v-loading="loading"
+	highlight-current-row="false"
+
+	:row-class-name="tableRowClassName">
+		    <el-table-column
+		      label="开票日期"
+		      width="180">
+		      <template slot-scope="scope">
+                 {{formatDateTime(scope.row.invoiceDate)}}
+             </template>
+		    </el-table-column>
+		    
+		    <el-table-column
+			  prop="invoiceNumber"
+		      label="发票代码">
+		    </el-table-column>
+		    
+		    <el-table-column
+		      prop="invoiceAmount"
+		      label="发票金额">
+		    </el-table-column>
+		    
+		    <el-table-column
+		      prop="invoiceRate"
+		      label="税点">
+		    </el-table-column>
+		    
+		    <el-table-column
+		      label="发票类型">
+		      <template slot-scope="scope">
+                 {{translate('INVOICE_TYPE',scope.row.invoiceType)}}
+             </template>
+		    </el-table-column>
+		    
+		    <el-table-column
+		      label="是否红冲">
+		      <template slot-scope="scope">
+                 {{translate('RED_INVOICE',scope.row.redFlag)}}
+             </template>
+		    </el-table-column>
+		    
+		    <el-table-column
+		      prop="remark"
+		      show-overflow-tooltip
+		      label="备注">
+		    </el-table-column>
+
+			<el-table-column
+				v-if="editAble"
+		      show-overflow-tooltip
+		      label="操作">
+		      <template slot-scope="scope">
+				<a @click="deleteRow(scope.row)">删除</a>
+             </template>
+		    </el-table-column>
+		  </el-table>
+</div>
+</script>
+
+<style>
+.red-flag{
+	color: #F00;
+	font-weight: bold;
+}
+
+</style>
+</script>
+<style>
+  #local .el-select .el-input {
+    width: 100px;
+  }
+  .input-with-select .el-input-group__prepend {
+    background-color: #fff;
+  }
+</style>

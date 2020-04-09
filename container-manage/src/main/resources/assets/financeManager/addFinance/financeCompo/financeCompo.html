@@ -1,0 +1,55 @@
+<script type="text/x-template" id="financeCompo">
+<div>
+	<el-row :gutter="20">
+  	<el-col :span="5">
+  		<el-select :disabled="!editAble" v-model="clientCompanyId" filterable clearable placeholder="选择客户公司">
+		    <el-option
+		      v-for="item in companyList"
+		      :key="item.companyId"
+		      :label="formatCompName(item)"
+		      :value="item.companyId">
+		    </el-option>
+		</el-select>
+
+  </el-alert>
+	</el-col>
+	<el-col :span="5">
+  		<el-select :disabled="!editAble" v-model="serviceCode" clearable placeholder="产品服务">
+		    <el-option
+		      v-for="item in products"
+		      :key="item.code"
+		      :label="item.value"
+		      :value="item.code">
+		    </el-option>
+		</el-select>
+	</el-col>
+
+	<el-col :span="6" id="local">
+  		<el-input :disabled="!editAble" style="width:80%" v-model="amount" clearable placeholder="输入金额">
+			<el-select :disabled="!editAble" v-model="amountCurrency" style="110px"  slot="prepend" clearable placeholder="货币种类">
+		    <el-option
+		      v-for="item in currencies"
+		      :key="item.code"
+		      :label="item.value"
+		      :value="item.code">
+		    </el-option>
+		</el-select>
+		</el-select>
+	</el-col>
+
+	<el-col :span="8">
+  		<el-input :disabled="!editAble" v-model="remark" clearable placeholder="备注信息">
+	</el-col>
+	</el-row>
+
+	
+</div>
+</script>
+<style>
+  #local .el-select .el-input {
+    width: 100px;
+  }
+  .input-with-select .el-input-group__prepend {
+    background-color: #fff;
+  }
+</style>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Tue Apr 02 11:11:58 CST 2013-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leewan.dao.module.ModuleDao">
+	
+	<resultMap type="Map" id="moduleMap">
+		<result column="ID" property="id"/>
+		<result column="CODE" property="code"/>
+		<result column="NAME" property="name"/>
+		<result column="NODE_TYPE" property="node_type"/>
+		<result column="PID" property="pid"/>
+		<result column="DESCRIPTION" property="description"/>
+	</resultMap>
+	<select id="queryModules" parameterType="com.leewan.bean.Role" resultMap="moduleMap">
+		SELECT id ID,code CODE,name NAME,node_type NODE_TYPE,pid PID,description DESCRIPTION from leewan_modules m where EXISTS (
+		SELECT 1 from leewan_role_module rm where rm.module_id=m.id and rm.role_id = #{id}
+		)
+		order by seq
+	</select>
+
+	<insert id="saveInvoice" parameterType="java.util.Map">
+	INSERT INTO invoice_list 
+	(invoice_id, invoice_number, invoice_amount, invoice_rate, invoice_date, invoice_type, 
+	red_flag, invoice_status, remark, finance_id, create_date) 
+	
+		VALUES (#{invoiceId}, #{invoiceNumber}, #{invoiceAmount}, #{invoiceRate}, #{invoiceDate}, 
+	#{invoiceType}, #{redFlag}, '1000', #{remark}, #{financeId}, date_format(now(),"%Y%m%d%H%i%s"));
+	</insert>
+	
+	
+	<delete id="deleteInvoice" parameterType="java.lang.Integer">
+		delete from invoice_list where invoice_id = #{invoiceId}
+	</delete>
+	
+</mapper>

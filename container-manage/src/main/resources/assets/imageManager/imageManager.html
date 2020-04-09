@@ -1,0 +1,45 @@
+<div id="imageManager" container-name="imageManager">
+		<el-row :gutter="20">
+			
+			<el-col :span="4">
+				<el-input v-model="imageName" placeholder="镜像名称"></el-input>
+			</el-col>
+			<el-col :span="4">
+				<el-button @click="queryImageList" type="success" icon="el-icon-refresh" circle></el-button>
+			</el-col>
+			
+		</el-row>
+	<div style="margin-top: 30px;">
+		<el-collapse v-model="activeName" accordion @change="queryTagList">
+			
+		  <el-collapse-item v-for="image in imageList" :title="image.name" :name="image.keyId">
+		    <el-table :data="image.children" 
+			border 
+			style="width: 100%;" 
+			row-key="keyId"
+			v-loading="loading">
+		    <el-table-column
+		      prop="name"
+		      label="镜像名称"
+		      min-width="300">
+		    </el-table-column>
+		    
+		    <el-table-column
+		      prop="tag"
+		      label="Tag"
+		      min-width="300">
+		    </el-table-column>
+		    
+		    <el-table-column
+		      prop="host"
+		      label="操作"
+		      width="150">
+		       <template slot-scope="scope">
+		       	<a @click="deleteImage(scope.row.name, scope.row.tag)">删除</a>
+               </template>
+		    </el-table-column>
+		  </el-table>
+		  </el-collapse-item>
+		</el-collapse>
+	</div>
+</div>

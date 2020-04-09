@@ -1,0 +1,231 @@
+<div id="newService" container-name="newService">
+
+<div class="float">
+	<el-button type="success" style="border-radius: 10px;font-weight: bolder;" class="el-icon-back" @click="goBack" plain round>
+	返回
+	</el-button>
+	</br>
+	<el-button style="border-radius: 10px;font-weight: bolder;margin-top:10px" type="primary" 
+		class="el-icon-check" @click="saveBasicInfo" plain round>
+	保存
+	</el-button>
+	</br>
+	<el-button v-if="hasService" style="border-radius: 10px;font-weight: bolder;margin-top:10px" type="warning" 
+		class="el-icon-check" @click="updateEditMode" plain round>
+	编辑
+	</el-button>
+	</br>
+	<el-button v-if="hasService" style="border-radius: 10px;font-weight: bolder;margin-top:10px" type="warning" 
+		class="el-icon-check" @click="startService" plain round>
+	{{service.status == 1?"启动":"重启"}}
+	</el-button>
+</div>
+<div v-loading="loading">
+<el-card v-if="hasService" class="box-card" style="margin-bottom: 15px;padding-bottom: 15px">
+  <div slot="header" class="clearfix">
+    <span>容器实例</span>
+  </div>
+
+<el-collapse-transition>
+	<el-row :gutter="20">
+	<el-col :span="6" style="margin-bottom:5px" v-for="item in containerList">
+	<el-card  class="box-card">
+	  <div><p class="right_align_title">容器ID:</p><span>{{item.CONTAINER_ID.substr(0,12)}}</span></div>
+	  <div><p class="right_align_title">IP:</p><span>{{item.IP}}</span></div>
+	  <div><p class="right_align_title">宿主机:</p><span>{{item.WORKER_ID}}</span></div>
+	  <div><p class="right_align_title">状态 :</p><span v-loading="item.loading">{{item.state}}</span></div>
+	</el-card>
+	</el-col>
+	</el-row>
+</el-collapse-transition>
+</el-card>
+
+<el-card class="box-card">
+  <div slot="header" class="clearfix">
+    <span>基本信息</span>
+    <span v-if="hasService">
+    	<i v-if="service.status == 2" style="color: #409eff;" class="el-icon-video-play"></i>
+    	<i v-if="service.status != 2" style="color: red;" class="el-icon-video-pause"></i>
+    </span>
+    
+  </div>
+
+<el-collapse-transition> 
+<el-form ref="basicInfo" v-if="showBasicInfo" :inline="true" :rules="rules" label-width="120px">
+	<el-col :span="24">
+	<el-form-item label="名称" style="width: 100%;">
+    	<el-input :disabled="!isEdit" v-model="service.name" ></el-input>
+  	</el-form-item>
+	</el-col>
+
+	<el-col :span="24">
+	<el-form-item label="实例数量" style="width: 100%;">
+    	<el-input-number :disabled="!isEdit" v-model="service.number" controls-position="right" :min="1" :max="100" style="width: 20%;"></el-input-number>
+  	</el-form-item>
+	</el-col>
+
+	<el-col :span="24">
+	<el-form-item label="应用描述" style="width: 100%;">
+    	<el-input :disabled="!isEdit" type="textarea" v-model="service.description" style="width: 100%;"></el-input>
+  	</el-form-item>
+	</el-col>
+</el-form>
+</el-collapse-transition>
+</el-card>
+
+
+
+<el-card class="box-card" style="margin-top: 15px">
+  <div slot="header" class="clearfix">
+    <span>容器信息</span>
+  </div>
+<el-collapse-transition> 
+<el-form ref="companyForm" :inline="true" :rules="rules"  label-width="120px">
+	<el-col :span="24">
+	<el-form-item label="镜像" style="width: 100%;">
+    	<el-select v-model="service.container.Image" :disabled="!isEdit"  clearable placeholder="选择镜像" @change="changeImage">
+		    <el-option
+		      v-for="item in imageList"
+		      :key="item"
+		      :label="item"
+		      :value="item">
+		    </el-option>
+		  </el-select>
+		  <el-select v-model="service.container.tag" :disabled="!isEdit"  clearable placeholder="选择版本">
+		    <el-option
+		      v-for="item in tagList"
+		      :key="item"
+		      :label="item"
+		      :value="item">
+		    </el-option>
+		  </el-select>
+		  
+  	</el-form-item>
+	</el-col>
+	
+	<el-col :span="24">
+	<el-form-item label="最大内存" style="width: 100%;">
+    	<el-input-number :disabled="!isEdit" v-model="service.container.HostConfig.Memory" controls-position="right" :min="50" :max="10240" style="width: 20%;"></el-input-number>
+    	&nbsp;M
+  	</el-form-item>
+	</el-col>
+	
+	<el-col :span="24">
+	<el-form-item label="容器端口" style="width: 100%;">
+		<el-row v-for="(item,idx) in ExposedPorts" style="margin-bottom:5px">
+    		<el-input :disabled="!isEdit" v-model="item" placeholder="容器端口" style="width: 30%;"></el-input>
+    		<i class="el-icon-remove" v-if="isEdit" style="color: red" @click="deletePort(idx)"></i>
+    	</el-row>
+    	
+    	<el-row>
+			<el-col :span="24">
+				<el-input :disabled="!isEdit" placeholder="容器端口" v-model="newExposedPort" style="width: 30%;"></el-input>
+				
+				<i class="el-icon-circle-plus" style="color: #03a9f4" @click="addPort"></i>
+				
+				<span><i class="el-icon-info" style="color: #787777cc"></i>只有点击了“添加”按钮，配置才会被保存</span>
+			</el-col>
+		</el-row>
+  	</el-form-item>
+	</el-col>
+
+	<el-col :span="24">
+	<el-form-item label="目录挂载" style="width: 100%;">
+		<el-row v-for="(item,idx) in service.container.HostConfig.Mounts">
+			<el-col :span="24" style="margin-bottom:5px">
+				
+				<el-input :disabled="!isEdit" v-model="item.Source" placeholder="主机目录" style="width: 30%;"></el-input>
+				&nbsp;&nbsp; : &nbsp;&nbsp;
+				<el-input :disabled="!isEdit" v-model="item.Target" placeholder="容器目录" style="width: 30%;"></el-input>
+				
+				<i class="el-icon-remove" v-if="isEdit" style="color: red" @click="deleteMount(idx)"></i>
+			</el-col>
+		</el-row>
+		<el-row>
+			<el-col :span="24">
+				<el-input :disabled="!isEdit" placeholder="主机目录" v-model="newMount.Source" style="width: 30%;"></el-input>
+				&nbsp;&nbsp; : &nbsp;&nbsp;
+				<el-input :disabled="!isEdit" placeholder="容器目录" v-model="newMount.Target" style="width: 30%;"></el-input>
+				
+				<i class="el-icon-circle-plus" style="color: #03a9f4" @click="addMount"></i>
+				
+				<span><i class="el-icon-info" style="color: #787777cc"></i>只有点击了“添加”按钮，配置才会被保存</span>
+			</el-col>
+		</el-row>
+  	</el-form-item>
+  	
+	</el-col>
+	
+	
+	<el-col :span="24">
+	<el-form-item label="环境变量" style="width: 100%;">
+		<el-row v-for="(item,idx) in service.container.Env">
+			<el-col :span="24" style="margin-bottom:5px">
+				<el-input :disabled="!isEdit" v-model="item[0]" style="width: 30%;"></el-input>
+				&nbsp;&nbsp; : &nbsp;&nbsp;
+				<el-input :disabled="!isEdit" v-model="item[1]" style="width: 30%;"></el-input>
+				
+				<i v-if="isEdit" class="el-icon-remove" style="color: red" @click="deleteEnv(idx)"></i>
+			</el-col>
+		</el-row>
+		<el-row>
+			<el-col :span="24">
+				<el-input :disabled="!isEdit" placeholder="KEY" v-model="newEnv[0]" style="width: 30%;"></el-input>
+				&nbsp;&nbsp; : &nbsp;&nbsp;
+				<el-input :disabled="!isEdit" placeholder="VALUE" v-model="newEnv[1]" style="width: 30%;"></el-input>
+				
+				<i class="el-icon-circle-plus" style="color: #03a9f4" @click="addEnv"></i>
+				<span><i class="el-icon-info" style="color: #787777cc"></i></i>只有点击了“添加”按钮，配置才会被保存</span>
+			</el-col>
+		</el-row>
+  	</el-form-item>
+  	
+	</el-col>
+</el-form>
+</el-collapse-transition>
+</el-card>
+
+</div>
+</div>
+
+
+<style>
+@keyframes dialog-fade-in {
+        0% {
+            transform: translate3d(-100%, 0, 0);
+            opacity: 0;
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes dialog-fade-out {
+        0% {
+            transform: translate3d(0, 0, 0);
+            opacity: 1;
+        }
+        100% {
+            transform: translate3d(-100%, 0, 0);
+            opacity: 0;
+        }
+    }
+#newService .el-form-item__content{
+	width: 70%
+}
+
+#newService .el-input.is-disabled .el-input__inner{
+	background-color: #F5F7FA;
+    border-color: #E4E7ED;
+    color: #555555;
+    cursor: not-allowed;
+}
+
+#newService .el-textarea.is-disabled .el-textarea__inner{
+	background-color: #F5F7FA;
+    border-color: #E4E7ED;
+    color: #555555;
+    cursor: not-allowed;
+}
+</style>

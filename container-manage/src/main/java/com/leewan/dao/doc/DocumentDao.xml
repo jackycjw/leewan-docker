@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Tue Apr 02 11:11:58 CST 2013-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leewan.dao.doc.DocumentDao">
+
+	<insert id="addDocTreeItem" parameterType="java.util.Map">
+	INSERT INTO leewan_service_tree 
+	(id, name, pid, seq, create_time, create_user_id, auth, type) 
+	VALUES 
+	(#{id}, #{name}, #{pid},#{seq}, #{createTime}, #{userId}, #{auth}, #{type})
+	</insert>
+	
+	
+	<insert id="addDocTreeItemOpen">
+		INSERT INTO leewan_doc_tree_open (id, role_id, doc_tree_id, create_time, create_user) 
+		VALUES (#{id}, #{roleId}, #{docTreeId}, #{createTime}, #{userId})
+	</insert>
+	
+	<insert id="addDocDetail" parameterType="java.util.Map">
+	INSERT INTO leewan_doc_detail 
+	(id, description, url, method, request_example, response_example, request_description, 
+	response_description, create_time, create_user, need_author) 
+	VALUES 
+	(#{id}, #{description}, #{url}, #{method}, #{requestExample}, #{responseExample}, #{requestDescription}, 
+	#{responseDescription}, #{createTime}, #{createUser}, #{needAuthor});
+	</insert>
+	
+	<resultMap type="Map" id="docTree">
+		<result column="ID" property="id"/>
+		<result column="NAME" property="name"/>
+		<result column="PID" property="pid"/>
+		<result column="SEQ" property="seq"/>
+		<result column="CREATE_TIME" property="createTime"/>
+		<result column="CREATE_USER_ID" property="createUserId"/>
+		<result column="UPDATE_TIME" property="updateTime"/>
+		<result column="UPDATE_USER" property="updateUser"/>
+		<result column="DETAIL_ID" property="detailId"/>
+		<result column="AUTH" property="auth"/>
+		<result column="TYPE" property="type"/>
+	</resultMap>
+	
+	<select id="queryDocList" resultMap="docTree">
+		SELECT id ID,name NAME,pid PID,seq SEQ,create_time CREATE_TIME,create_user_id CREATE_USER_ID,
+		update_time UPDATE_TIME,update_user UPDATE_USER,detail_id DETAIL_ID,auth AUTH,type TYPE
+ 		from leewan_service_tree t
+ 		
+ 		<if test="role != null and role !=''">
+	 	left join leewan_doc_tree_open t2 on t2.doc_tree_id = t.id	
+	 	</if>
+ 		<where>
+	 		<if test="auth != null and auth !=''">
+	 			and auth >= #{auth}
+	 		</if>
+	 		<if test="role != null and role !=''">
+	 			and t.type &lt;=2
+	 			or t2.role_id = #{role}
+	 		</if>
+	 		
+ 		</where>
+	</select>
+
+</mapper>

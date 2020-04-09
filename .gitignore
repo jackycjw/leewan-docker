@@ -1,0 +1,11 @@
+/.metadata/
+/.recommenders/
+/RemoteSystemsTempFiles/
+/*/bin/
+/*/.settings
+/*/.classpath
+/*/.project
+
+/*/.factorypath
+/*/.springBeans
+/*/target/

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Tue Apr 02 11:11:58 CST 2013-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leewan.dao.finance.FinanceDao">
+
+	<select id="queryFinanceList" parameterType="java.util.Map">
+	SELECT 
+		f.finance_id,c.name_ch, c.name_en ,f.create_date, f.service_code, f.amount, f.amount_currency,
+		(SELECT count(1) from invoice_list v where v.finance_id=f.finance_id) invoice_count,
+		(SELECT sum(fu.fund_actual_amount * fu.direction) from fund_list fu where fu.finance_id=f.finance_id) actual_amount
+		 from finance_list f 
+		INNER JOIN companies c on f.client_company_id=c.company_id
+		
+		<where>
+			<if test="financeId != null and financeId != ''">
+				f.finance_id = #{financeId}
+			</if>
+			<if test="compName != null and compName != ''">
+				and (
+				c.name_ch like '%${compName}%' or c.name_en like '%${compName}%'
+				)
+			</if>
+			
+			<!-- 发票方面查询条件 -->
+			<if test="(invoiceNumber != null and invoiceNumber != '')
+					or (startInvoiceDate != null and startInvoiceDate != '')
+					or (endInvoiceDate != null and endInvoiceDate != '')
+					or (invoiceType != null and invoiceType != '')">
+					
+					
+				and EXISTS(
+					SELECT 1 from invoice_list vl where vl.finance_id = f.finance_id 
+					<if test="invoiceNumber != null and invoiceNumber != ''">
+					and vl.invoice_number= #{invoiceNumber}
+					</if>
+					<if test="startInvoiceDate != null and startInvoiceDate != ''">
+					and vl.invoice_date &gt;= #{startInvoiceDate}
+					</if>
+					<if test="endInvoiceDate != null and endInvoiceDate != ''">
+					and vl.invoice_date &lt;= #{endInvoiceDate}
+					</if>
+					<if test="invoiceType != null and invoiceType != ''">
+					and vl.invoice_type = #{invoiceType}
+					</if>
+				)
+			</if>
+			
+			<!-- 资金方面的查询条件 -->
+			<if test="(startArriveDate != null and startArriveDate != '')
+					or (endArriveDate != null and endArriveDate != '')">
+				and EXISTS(
+					SELECT 1 from fund_list fl where fl.finance_id=f.finance_id 
+					<if test="startArriveDate != null and startArriveDate != ''">
+					and fl.arrive_date &gt;= #{startArriveDate}
+					</if>
+					<if test="endArriveDate != null and endArriveDate != ''">
+					and fl.arrive_date &lt;= #{endArriveDate}
+					</if>
+				)
+			</if>
+		</where>
+	</select>
+
+	<select id="getFinance" parameterType="java.lang.Integer">
+		select * from finance_list f where f.finance_id = #{financeId}
+	</select>
+
+	
+	<insert id="saveFinance" parameterType="java.util.Map">
+	INSERT INTO finance_list 
+	(finance_id, main_company_id, client_company_id, service_code, 
+	amount, amount_currency, remark, create_date) 
+	VALUES 
+	(#{financeId}, '1', #{clientCompanyId}, #{serviceCode}, 
+	#{amount}, #{amountCurrency}, #{remark}, date_format(now(),"%Y%m%d%H%i%s"))
+	</insert>
+	
+	<update id="updateFinance" parameterType="java.util.Map">
+		update finance_list 
+		<set>
+			<if test="clientCompany != null and clientCompany != ''">
+			client_company_id = #{clientCompany}, 
+			</if>
+			<if test="serviceCode != null and serviceCode != ''">
+			service_code = #{serviceCode}, 
+			</if>
+			<if test="amount != null and amount != ''">
+			amount = #{amount}, 
+			</if>
+			<if test="amountCurrency != null and amountCurrency != ''">
+			amount_currency = #{amountCurrency}, 
+			</if>
+			<if test="remark != null and remark != ''">
+			remark = #{remark}, 
+			</if>
+		</set>
+		where finance_id = #{financeId}
+	</update>
+
+</mapper>

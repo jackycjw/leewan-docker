@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Tue Apr 02 11:11:58 CST 2013-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leewan.dao.company.CompanyDao">
+
+	<select id="queryCompanyList" parameterType="java.util.Map">
+		select * from companies
+	</select>
+
+	<insert id="saveCompany" parameterType="java.util.Map">
+		INSERT INTO companies (company_id, name_ch, name_en, remark) 
+		VALUES (#{companyId}, #{nameCh}, #{nameEn}, #{remark});
+	</insert>
+
+	<delete id="deleteCompany" parameterType="java.lang.Integer">
+		delete from companies where company_id = #{companyId}
+	</delete>
+</mapper>

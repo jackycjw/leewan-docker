@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Tue Apr 02 11:11:58 CST 2013-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leewan.dao.invoice.InvoiceDao">
+
+	<select id="queryInvoiceList" >
+		SELECT * from invoice_list vi where vi.finance_id=#{financeId}
+	</select>
+
+	<insert id="saveInvoice" parameterType="java.util.Map">
+	INSERT INTO invoice_list 
+	(invoice_id, invoice_number, invoice_amount, invoice_rate, invoice_date, invoice_type, 
+	red_flag, invoice_status, remark, finance_id, create_date) 
+	
+		VALUES (#{invoiceId}, #{invoiceNumber}, #{invoiceAmount}, #{invoiceRate}, #{invoiceDate}, 
+	#{invoiceType}, #{redFlag}, '1000', #{remark}, #{financeId}, date_format(now(),"%Y%m%d%H%i%s"));
+	</insert>
+	
+	
+	<delete id="deleteInvoice" parameterType="java.lang.Integer">
+		delete from invoice_list where invoice_id = #{invoiceId}
+	</delete>
+	
+</mapper>

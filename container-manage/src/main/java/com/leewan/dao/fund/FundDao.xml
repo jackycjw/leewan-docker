@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Tue Apr 02 11:11:58 CST 2013-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leewan.dao.fund.FundDao">
+
+	<select id="queryFundList" parameterType="java.util.Map">
+		SELECT * FROM fund_list f where f.finance_id=#{financeId}
+	</select>
+	
+	<select id="getFund" parameterType="java.lang.Integer">
+		SELECT * FROM fund_list f where f.fund_id=#{fundId}
+	</select>
+
+	<insert id="saveFund" parameterType="java.util.Map">
+	INSERT INTO fund_list 
+	(fund_id, fund_actual_amount, actual_amount_currency, arrive_date, 
+	exchange_date, related_amount, related_amount_currency, fund_status, 
+	direction, remark, finance_id, create_date) 
+	VALUES 
+	(#{fundId}, #{fundActualAmount}, #{amountCurrency}, #{arriveDate}, #{exchangeDate}, 
+	#{relatedAmount}, #{relatedAmountCurrency}, '1000', #{direction}, #{remark}, #{financeId}, date_format(now(),"%Y%m%d%H%i%s"));
+	</insert>
+	
+	
+	
+	<delete id="deleteFund" parameterType="java.lang.Integer">
+		delete from fund_list where fund_id = #{fundId}
+	</delete>
+	
+	<update id="updateFund" parameterType="java.util.Map">
+		update fund_list 
+		<set>
+			<if test="actualAmount != null and actualAmount != ''">
+			fund_actual_amount = #{fundActualAmount}, 
+			</if>
+			<if test="amountCurrency != null and amountCurrency != ''">
+			actual_amount_currency = #{amountCurrency}, 
+			</if>
+			<if test="relatedAmount != null and relatedAmount != ''">
+			related_amount = #{relatedAmount}, 
+			</if>
+			<if test="relatedAmountCurrency != null and relatedAmountCurrency != ''">
+			related_amount_currency = #{relatedAmountCurrency}, 
+			</if>
+			<if test="exchangeDate != null and exchangeDate != ''">
+			exchange_date = #{exchangeDate}, 
+			</if>
+		</set>
+		where fund_id = #{fundId}
+	</update>
+	
+</mapper>

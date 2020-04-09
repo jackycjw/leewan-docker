@@ -1,0 +1,14 @@
+server:
+  port: 74
+  
+logging: 
+  level:
+    root: INFO
+    org.springframework.security: INFO
+
+
+
+
+spring: 
+  resources:
+    static-locations: classpath:/bundles/

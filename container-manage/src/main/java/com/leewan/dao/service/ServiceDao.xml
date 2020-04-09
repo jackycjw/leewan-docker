@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Tue Apr 02 11:11:58 CST 2013-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leewan.dao.service.ServiceDao">
+	
+	<resultMap type="java.util.Map" id="serviceMap">
+		<result column="ID" property="id"/>
+		<result column="NAME" property="name"/>
+		<result column="DESCRIPTION" property="description"/>
+		<result column="NUMBER" property="number"/>
+		<result column="STATUS" property="status"/>
+		<result column="CONTAINER_CONFIG" property="container"/>
+		<result column="CREATE_TIME" property="create_time"/>
+		<result column="UPDATE_TIME" property="update_time"/>
+		<result column="CREATE_USER" property="create_user"/>
+		<result column="UPDATE_USER" property="update_user"/>
+	</resultMap>
+	
+	<select id="query" parameterType="java.util.Map" resultMap="serviceMap">
+		SELECT id ID,name NAME,description DESCRIPTION,number NUMBER,status STATUS,
+		container_config CONTAINER_CONFIG,create_time CREATE_TIME,update_time UPDATE_TIME,
+		(select u.name from leewan_users u where u.id=t.create_user) CREATE_USER,
+		(select u.name from leewan_users u where u.id=t.update_user) UPDATE_USER
+ 		FROM leewan_service t 
+		<where>
+			<if test="name != null and name != ''">
+			t.name like '%${name}%'
+			</if> 
+		</where>
+	</select>
+
+	<update id="save" parameterType="java.util.Map">
+		INSERT INTO leewan_service 
+		(id, name, description, number, container_config, 
+		create_time, create_user) 
+		VALUES (#{id}, #{name}, #{description}, #{number}, #{container}, #{time}, #{userId})
+	</update>
+	
+	<update id="update" parameterType="java.util.Map">
+		UPDATE leewan_service SET 
+		name=#{name}, description=#{description}, number=#{number}, container_config=#{container}, 
+		status=#{status}, update_time=#{time}, update_user=#{userId} 
+		WHERE id=#{id}
+	</update>
+	
+	<select id="queryContainers" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT container_id CONTAINER_ID,service_id SERVICE_ID,worker_id WORKER_ID
+		from leewan_container t 
+		<where>
+			<if test="serviceId != null and serviceId != ''">
+				and t.service_id = #{serviceId}
+			</if>
+			<if test="containerId != null and containerId != ''">
+				and t.container_id = #{containerId}
+			</if>
+			<if test="maxTime != null and maxTime != ''">
+				and t.create_time &lt; #{maxTime}
+			</if>
+		</where>
+	</select>
+	
+	
+	<select id="getService" resultMap="serviceMap">
+		SELECT id ID,name NAME,description DESCRIPTION,number NUMBER,status STATUS,
+		container_config CONTAINER_CONFIG,create_time CREATE_TIME,update_time UPDATE_TIME,
+		(select u.name from leewan_users u where u.id=t.create_user) CREATE_USER,
+		(select u.name from leewan_users u where u.id=t.update_user) UPDATE_USER
+ 		FROM leewan_service t 
+		where t.id = #{serviceId}
+	</select>
+	
+	<insert id="saveContainer" parameterType="list">
+		INSERT INTO leewan_container (container_id, service_id, worker_id, create_time) VALUES 
+		<foreach collection="list" separator="," item="item">
+			(#{item.containerId}, #{item.serviceId}, #{item.workerId},#{item.createTime})
+		</foreach>
+	</insert>
+	
+	<delete id="delContainers" parameterType="java.util.Map">
+		delete from leewan_container 
+		<where>
+			<if test="serviceId != null and serviceId != ''">
+				and service_id = #{serviceId}
+			</if>
+			<if test="maxTime != null and maxTime != ''">
+				and create_time &lt; #{maxTime}
+			</if>
+		</where>
+	</delete>
+</mapper>

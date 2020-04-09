@@ -1,0 +1,79 @@
+<script type="text/x-template" id="fundAddCompo">
+<el-form ref="fundForm" :model="form" :rules="rules" label-width="120px">
+<el-form-item label="收支方向">
+	<el-switch
+  v-model="form.directionProxy"
+  active-text="支出"
+  inactive-text="收入">
+  </el-switch>
+  </el-form-item>
+	<el-form-item label="金额" prop="actualAmount">
+    	<el-input v-model.number="form.fundActualAmount" style="width: 40%" autocomplete="off" ></el-input>
+  	</el-form-item>
+
+	<el-form-item label="货币" prop="amountCurrency">
+    	<el-select v-model="form.amountCurrency" clearable >
+		    <el-option
+		      v-for="item in currencies"
+		      :key="item.code"
+		      :label="item.value"
+		      :value="item.code">
+		    </el-option>
+		</el-select>
+  	</el-form-item>
+
+	<el-form-item label="打款日期" prop="arriveDate">
+    	<el-date-picker
+      		v-model="form.arriveDate"
+      		type="date"
+	        placeholder="开票日期">
+	    </el-date-picker>
+  	</el-form-item>
+
+
+	<el-form-item label="结汇金额" prop="relatedAmount">
+    	<el-input v-model.number="form.relatedAmount" style="width: 40%"></el-input>
+  	</el-form-item>
+
+	<el-form-item label="结汇货币" prop="relatedAmountCurrency">
+    	<el-select v-model="form.relatedAmountCurrency">
+		    <el-option
+		      v-for="item in currencies"
+		      :key="item.code"
+		      :label="item.value"
+		      :value="item.code">
+		    </el-option>
+		</el-select>
+  	</el-form-item>
+
+	<el-form-item label="结汇日期" prop="exchangeDate">
+    	<el-date-picker
+      		v-model="form.exchangeDate"
+      		type="date"
+	        placeholder="开票日期">
+	    </el-date-picker>
+  	</el-form-item>
+
+
+  	<el-form-item label="备注">
+    	<el-input v-model="form.remark" style="width: 40%"></el-input>
+  	</el-form-item>
+  	
+  	<el-form-item>
+	    <el-button type="primary" @click="save">立即新增</el-button>
+	</el-form-item>
+</el-form>
+</script>
+
+<style>
+  #local .el-select .el-input {
+    width: 100px;
+  }
+  .input-with-select .el-input-group__prepend {
+    background-color: #fff;
+  }
+  .red-flag{
+	color: #F00;
+	font-weight: bold;
+}
+</style>

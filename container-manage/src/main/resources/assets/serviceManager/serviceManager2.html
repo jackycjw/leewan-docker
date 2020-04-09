@@ -1,0 +1,35 @@
+<div id="serviceManager" container-name="serviceManager">
+
+<el-container style="height: 600px; border: 1px solid #eee">
+  <el-aside width="250px" style="background-color: rgb(238, 241, 246);border-right: 1px solid #eee">
+	 <el-input
+	  placeholder="输入关键字进行过滤"
+	  v-model="filterText">
+	</el-input>
+	
+	<el-tree
+	  v-loading="treeLoading"
+	  class="filter-tree"
+	  :data="docTree"
+	  :props="docTreeProp"
+	  default-expand-all
+	  indent="8"
+	  :filter-node-method="filterNode"
+	  ref="tree">
+	  
+	  	<span class="custom-tree-node" slot-scope="{ node, data }">
+	  		<i :class="nodeIcon(node)" style="color: #2196F3"></i>
+	        <span :class="nodeClass(node)">{{ node.label }}</span>
+	        <span style="margin-left: 10px">
+	        	<i v-if="addAble && node.data.type != '3'" class="el-icon-circle-plus" style="color: #2196F3" @click="beginAdd(node, event)"></i>
+	        	<i v-if="delAble" class="el-icon-delete" style="color: #FF5722" @click="beginDel(node, event)"></i>
+	        </span>
+      	</span>
+	</el-tree>
+  </el-aside>
+  
+  <el-main>
+  		<add-document v-if="pageMode == 'ADD'" :parent-node="currentNode"></add-document>
+  </el-main>
+</el-container>
+</div>

@@ -1,0 +1,104 @@
+<script type="text/x-template" id="newModule">
+<div>
+<el-card class="box-card">
+  <div slot="header" class="clearfix">
+    <span>鑺傜偣淇℃伅</span>
+    <el-button style="float: right; padding: 3px 0" type="text" @click="nodeHeadAction">{{nodeHeadActionName}}</el-button>
+  </div>
+
+<el-collapse-transition> 
+<el-form v-if="newNodeShow" ref="companyForm" :inline="true" :model="form" label-width="120px">
+	<el-col :span="8">
+	<el-form-item label="涓婄骇鑿滃崟">
+    	<el-input :disabled="true" v-model="parentNode.name" ></el-input>
+  	</el-form-item>
+	</el-col>
+
+	<el-col :span="8">
+	<el-form-item label="鑺傜偣鍚嶇О">
+    	<el-input v-model="newNode.name" ></el-input>
+  	</el-form-item>
+	</el-col>
+
+	<el-col :span="8">
+	<el-form-item label="鑺傜偣绫诲瀷">
+		<el-select v-model="newNode.type" placeholder="璇烽�夋嫨" style="width: 93%;">
+    		<el-option
+      		v-for="item in nodeTypes"
+      		:key="item.value"
+      		:label="item.value"
+      		:value="item.code"
+			:disabled="item.code == '1'">
+    		</el-option>
+  		</el-select>
+  	</el-form-item>
+	</el-col>
+
+	<el-col :span="8">
+	<el-form-item label="寮�鏀剧▼搴�" prop="nameEn">
+    	<el-select v-model="newNode.auth" placeholder="璇烽�夋嫨" style="width: 93%;">
+    		<el-option
+      		v-for="item in openLevel"
+      		:key="item.value"
+      		:label="item.label"
+      		:value="item.value">
+    		</el-option>
+  		</el-select>
+  	</el-form-item>
+	</el-col>
+
+	<el-col :span="8" v-if="newNode.auth == 4">
+	<el-form-item label="寮�鏀捐鑹�" prop="nameEn">
+    	<el-select v-model="newNode.roles" multiple placeholder="璇烽�夋嫨" style="width: 93%;">
+    		<el-option
+      		v-for="item in userStore.state.outerRoles"
+      		:key="item.id"
+      		:label="item.name"
+      		:value="item.id">
+    		</el-option>
+  		</el-select>
+  	</el-form-item>
+	</el-col>
+</el-form>
+</el-collapse-transition>
+</el-card>
+
+<el-card class="box-card" v-if="newNode.type == 2" style="margin-top: 15px">
+  <div slot="header" class="clearfix">
+    <span>妯″潡淇℃伅</span>
+  </div>
+</el-card>
+
+<el-card class="box-card" v-if="newNode.type == 3" style="margin-top: 15px">
+  <div slot="header" class="clearfix">
+    <span>鎺ュ彛淇℃伅</span>
+  </div>
+</el-card>
+</div>
+</script>
+
+
+<style>
+@keyframes dialog-fade-in {
+        0% {
+            transform: translate3d(-100%, 0, 0);
+            opacity: 0;
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes dialog-fade-out {
+        0% {
+            transform: translate3d(0, 0, 0);
+            opacity: 1;
+        }
+        100% {
+            transform: translate3d(-100%, 0, 0);
+            opacity: 0;
+        }
+    }
+    
+</style>

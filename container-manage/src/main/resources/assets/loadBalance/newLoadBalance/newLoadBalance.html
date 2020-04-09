@@ -1,0 +1,81 @@
+<div id="newLoadBalance" container-name="newLoadBalance">
+
+<div class="float">
+	<el-button type="success" style="border-radius: 10px;font-weight: bolder;" class="el-icon-back" @click="goBack" plain round>
+	返回
+	</el-button>
+	</br>
+	<el-button style="border-radius: 10px;font-weight: bolder;margin-top:10px" type="primary" 
+		class="el-icon-check" @click="saveBasicInfo" plain round>
+	保存
+	</el-button>
+	</br>
+	<el-button v-if="hasService" style="border-radius: 10px;font-weight: bolder;margin-top:10px" type="warning" 
+		class="el-icon-check" @click="updateEditMode" plain round>
+	编辑
+	</el-button>
+	</br>
+	<el-button v-if="hasService" style="border-radius: 10px;font-weight: bolder;margin-top:10px" type="warning" 
+		class="el-icon-check" @click="startService" plain round>
+	{{service.status == 1?"启动":"重启"}}
+	</el-button>
+</div>
+<div v-loading="loading">
+
+<el-card class="box-card">
+  <div slot="header" class="clearfix">
+    <span>基本信息</span>
+    <span v-if="hasService">
+    	<i v-if="service.status == 2" style="color: #409eff;" class="el-icon-video-play"></i>
+    	<i v-if="service.status != 2" style="color: red;" class="el-icon-video-pause"></i>
+    </span>
+    
+  </div>
+
+<el-collapse-transition> 
+<el-form ref="basicInfo" :inline="true" label-width="120px">
+	<el-col :span="24">
+	<el-form-item label="名称" style="width: 100%;">
+    	<el-input :disabled="!isEdit" v-model="balance.name" ></el-input>
+  	</el-form-item>
+	</el-col>
+
+
+	<el-col :span="24">
+	<el-form-item label="描述" style="width: 100%;">
+    	<el-input :disabled="!isEdit" type="textarea" v-model="balance.description" style="width: 100%;"></el-input>
+  	</el-form-item>
+	</el-col>
+	
+	<el-col :span="24">
+	<el-form-item label="选择负载机器" style="width: 100%;">
+    	  <el-select v-model="balance.workerId" clearable placeholder="请选择">
+		    <el-option
+		      v-for="item in balanceList"
+		      :key="item.id"
+		      :label="item.host"
+		      :value="item.id">
+		    </el-option>
+		  </el-select>
+  	</el-form-item>
+	</el-col>
+	
+	<el-col :span="24">
+	<el-form-item label="主机端口" style="width: 100%;">
+    	  <el-input @blur="checkPort" :disabled="!isEdit" v-model="balance.port" style="width: 40%;display: inline-block;"></el-input>
+    	  <div v-if="balance.port.length>0" style="display: inline-block;">
+    	  	<span v-if="checkPortUsed" style="color: red"><i class="el-icon-error" ></i>端口已经被占用</span>
+    	  	<span v-if="!checkPortUsed" style="color: #3a8ee6"><i class="el-icon-success"></i>端口可用使用</span>
+    	  </div>
+  	</el-form-item>
+	</el-col>
+	<el-col :span="24">
+	<el-form-item label="容器端口" style="width: 100%;">
+    	  <el-input :disabled="!isEdit" v-model="balance.containerPort" style="width: 40%;"></el-input>
+  	</el-form-item>
+	</el-col>
+</el-form>
+</el-collapse-transition>
+</el-card>
+</div>
+</div>

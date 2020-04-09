@@ -1,0 +1,93 @@
+<div id=workerManager container-name="workerManager">
+	<div style="margin-top: 30px;">
+		<el-table :data="workerList" stripe fit border style="width: 100%;" v-loading="loading">
+		    <el-table-column
+		      prop="id"
+		      label="ID"
+		      width="180">
+		    </el-table-column>
+		    
+		    <el-table-column
+		      prop="host"
+		      label="IP">
+		    </el-table-column>
+		    
+		    <el-table-column
+		      label="机器性质">
+		      <template slot-scope="scope">
+                 {{scope.row.type==1?"任务":"负载"}}
+              </template>
+		    </el-table-column>
+		    
+		    <el-table-column
+		      prop="date"
+		      sortable
+		      label="加入集群时间">
+		    </el-table-column>
+		    
+		    <el-table-column
+		      prop="lastActiveTime"
+		      label="上次活跃">
+		      <template slot-scope="scope">
+                 {{scope.row.lastActiveTime + "秒"}}
+             </template>
+		    </el-table-column>
+		    
+		    <el-table-column
+		      prop="mem-total"
+		      min-width="100px"
+		      label="内存">
+		      <template slot-scope="scope">
+		      	<el-progress type="circle" width="50" :percentage="round(scope.row['mem-percent']*100,1)"></el-progress>
+		      	<span style="float: right;line-height: 50px;">
+			      	<span style="font-weight: bolder;">
+			      	{{formatComputer(scope.row['mem-total']-scope.row['mem-free'],memUnit)}}
+			      	</span>
+			      	/
+	                 {{formatComputer(scope.row['mem-total'],memUnit)}}
+                 </span>
+                 
+             </template>
+		    </el-table-column>
+		    
+		    
+		    
+		    
+		    <el-table-column
+		      prop="cpu"
+		      label="CPU使用率">
+		      <template slot-scope="scope">
+                 {{formatPercent(scope.row.cpu)}}
+             </template>
+		    </el-table-column>
+		    
+		  </el-table>
+		  
+          
+	</div>
+</div>
+
+<style>
+@keyframes dialog-fade-in {
+        0% {
+            transform: translate3d(-100%, 0, 0);
+            opacity: 0;
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes dialog-fade-out {
+        0% {
+            transform: translate3d(0, 0, 0);
+            opacity: 1;
+        }
+        100% {
+            transform: translate3d(-100%, 0, 0);
+            opacity: 0;
+        }
+    }
+    
+</style>

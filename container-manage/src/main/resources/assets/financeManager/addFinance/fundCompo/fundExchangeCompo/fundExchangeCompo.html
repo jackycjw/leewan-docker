@@ -1,0 +1,49 @@
+<script type="text/x-template" id="fundExchangeCompo">
+<el-form ref="fundForm" :model="form" :rules="rules" label-width="120px">
+
+	<el-form-item label="结汇金额" prop="relatedAmount">
+    	<el-input v-model.number="form.relatedAmount" style="width: 40%"></el-input>
+  	</el-form-item>
+
+	<el-form-item label="结汇货币" prop="relatedAmountCurrency">
+    	<el-select v-model="form.relatedAmountCurrency">
+		    <el-option
+		      v-for="item in currencies"
+		      :key="item.code"
+		      :label="item.value"
+		      :value="item.code">
+		    </el-option>
+		</el-select>
+  	</el-form-item>
+
+	<el-form-item label="结汇日期" prop="exchangeDate">
+    	<el-date-picker
+      		v-model="form.exchangeDate"
+      		type="date"
+	        placeholder="结汇日期">
+	    </el-date-picker>
+  	</el-form-item>
+
+
+  	<el-form-item label="备注">
+    	<el-input v-model="form.remark" style="width: 40%"></el-input>
+  	</el-form-item>
+  	
+  	<el-form-item>
+	    <el-button type="primary" @click="save">确定</el-button>
+	</el-form-item>
+</el-form>
+</script>
+
+<style>
+  #local .el-select .el-input {
+    width: 100px;
+  }
+  .input-with-select .el-input-group__prepend {
+    background-color: #fff;
+  }
+  .red-flag{
+	color: #F00;
+	font-weight: bold;
+}
+</style>

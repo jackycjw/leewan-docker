@@ -1,0 +1,84 @@
+<script type="text/x-template" id="addFinance">
+<div>
+	<div class="leewan-pannel">
+		<div class="title">
+			<div></div>
+			<span>概要</span>
+			<i v-if="editAble" @click="financeCompoSave" class="el-icon-check">保存</i>
+		</div>
+		<div class="body">
+			<finance-compo ref="financeCompo"></finance-compo>
+		</div>
+	</div>
+	
+	
+	<div class="leewan-pannel">
+		<div class="title">
+			<div></div>
+			<span>发票信息</span>
+			<i v-if="editAble" style="float: none;color: #3e57c4;" @click="invoiceAddVisible=true" title="新增" class="el-icon-plus"></i>
+		</div>
+		<div class="body">
+			<invoice-compo></invoice-compo>
+		</div>
+	</div>
+	
+	<div class="leewan-pannel">
+		<div class="title">
+			<div></div>
+			<span>资金信息</span>
+			<i v-if="editAble" style="float: none;color: #3e57c4;" @click="fundAddVisible=true" title="新增" class="el-icon-plus"></i>
+		</div>
+		<div class="body">
+			<fund-compo></fund-compo>
+		</div>
+	</div>
+	
+    <el-dialog modal top="0" title="新增发票"
+        :visible.sync="invoiceAddVisible"
+        :close-on-click-modal="false"
+		style="left:600px"
+        class="dialog-right"
+		append-to-body>
+		<invoice-add-compo></invoice-add-compo>
+	</el-dialog>
+	
+	<el-button v-if="!editAble" type="primary" @click="financeStore.state.mode=UPDATE_MODE" round plain icon="el-icon-edit">编辑</el-button>
+
+	<el-dialog modal top="0" title="新增资金信息"
+        :visible.sync="fundAddVisible"
+        :close-on-click-modal="false"
+		style="left:600px"
+        class="dialog-right"
+		append-to-body>
+		<fund-add-compo></fund-add-compo>
+	</el-dialog>
+	
+</div>
+</script>
+
+
+<style>
+@keyframes dialog-fade-in {
+        0% {
+            transform: translate3d(-100%, 0, 0);
+            opacity: 0;
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes dialog-fade-out {
+        0% {
+            transform: translate3d(0, 0, 0);
+            opacity: 1;
+        }
+        100% {
+            transform: translate3d(-100%, 0, 0);
+            opacity: 0;
+        }
+    }
+    
+</style>

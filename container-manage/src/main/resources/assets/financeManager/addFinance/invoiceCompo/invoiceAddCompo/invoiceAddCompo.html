@@ -1,0 +1,59 @@
+<script type="text/x-template" id="invoiceAddCompo">
+<el-form ref="form" :model="form" label-width="120px">
+	<el-form-item label="发票代码">
+    	<el-input v-model="form.invoiceNumber" style="width: 40%"></el-input>
+  	</el-form-item>
+  	
+  	<el-form-item label="发票金额">
+    	<el-input v-model="form.invoiceAmount" style="width: 40%"></el-input>
+  	</el-form-item>
+  	
+  	<el-form-item label="税率">
+    	<el-input v-model="form.invoiceRate" style="width: 40%"></el-input>
+  	</el-form-item>
+  	
+  	<el-form-item label="开票日期">
+    	<el-date-picker
+      		v-model="form.invoiceDate"
+      		type="date"
+	        placeholder="开票日期">
+	    </el-date-picker>
+  	</el-form-item>
+  	
+	<el-form-item label="发票类型">
+    	<el-select v-model="form.invoiceType" clearable placeholder="产品服务">
+		    <el-option
+		      v-for="item in invoiceTypes"
+		      :key="item.code"
+		      :label="item.value"
+		      :value="item.code">
+		    </el-option>
+		</el-select>
+  	</el-form-item>
+  	
+  	<el-form-item label="是否红冲">
+    	<el-switch v-model="form.redFlag"></el-switch>
+  	</el-form-item>
+
+  	<el-form-item label="备注">
+    	<el-input v-model="form.remark" style="width: 40%"></el-input>
+  	</el-form-item>
+  	
+  	<el-form-item>
+	    <el-button type="primary" @click="save">立即新增</el-button>
+	</el-form-item>
+</el-form>
+</script>
+
+<style>
+  #local .el-select .el-input {
+    width: 100px;
+  }
+  .input-with-select .el-input-group__prepend {
+    background-color: #fff;
+  }
+  .red-flag{
+	color: #F00;
+	font-weight: bold;
+}
+</style>
